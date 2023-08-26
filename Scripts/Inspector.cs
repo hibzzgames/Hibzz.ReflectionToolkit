@@ -83,6 +83,10 @@ namespace Hibzz.ReflectionToolkit
             Members.Clear();
             Types.Clear();
 
+            // reset selected assembly
+            SelectedAssembly = null;
+            SelectedType = null;
+
             // assemblies don't change after initialization, if it did, unity would reload domain, reseting this tool
             // so if the list is populated, it indicates that the process has already been run once
             if(Assemblies.Count > 0) { return; }
@@ -122,6 +126,7 @@ namespace Hibzz.ReflectionToolkit
         {
             // same reasoning as the RefreshAssemblies
             Members.Clear();
+            SelectedType = null;
 
             // make sure an assembly is selected
             if(SelectedAssembly == null)
@@ -135,6 +140,7 @@ namespace Hibzz.ReflectionToolkit
 
             // put all the types in the selected assembly into a list
             Types = SelectedAssembly.GetTypes().ToList();
+            Types.Sort((a, b) => a.FullName.CompareTo(b.FullName));
         }
 
         /// <summary>

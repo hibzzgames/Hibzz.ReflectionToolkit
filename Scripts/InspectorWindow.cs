@@ -72,8 +72,6 @@ namespace Hibzz.ReflectionToolkit
                 RefreshResultView();
             });
 
-            // todo: add callbacks to list items when selecting major badges
-
             // by default show the list of assemblies (if no assembly is selected)
             inspector.RefreshAssemblies();
 
@@ -173,11 +171,29 @@ namespace Hibzz.ReflectionToolkit
 
             // when an assembly is selected, show badge with assembly name
             if(inspector.SelectedAssembly == null) { return; }
-            badgeContainer.Add(GenerateMajorBadge(inspector.SelectedAssembly.GetName().Name, __AssemblyBadgeColor));
+            var assemblyBadge = GenerateMajorBadge(inspector.SelectedAssembly.GetName().Name, __AssemblyBadgeColor);
+
+            // when clicking the assembly badge, show a list of all badges
+            assemblyBadge.RegisterCallback<MouseDownEvent>(e => 
+            {
+                inspector.RefreshAssemblies();
+                RefreshResultView();
+            });
+            
+            badgeContainer.Add(assemblyBadge);
 
             // when a type is selected, show badge with the type name (including namespace)
             if(inspector.SelectedType == null) { return; }
-            badgeContainer.Add(GenerateMajorBadge(inspector.SelectedType.FullName, __TypeBadgeColor));
+            var typeBadge = GenerateMajorBadge(inspector.SelectedType.FullName, __TypeBadgeColor);
+
+            // when clicking the type badge, show a list of all types in the assembly that the selected type is part of
+            typeBadge.RegisterCallback<MouseDownEvent>(e => 
+            {
+                inspector.RefreshTypes();
+                RefreshResultView();
+            });
+
+            badgeContainer.Add(typeBadge);
         }
 
         VisualElement GenerateMajorBadge(string text, Color color)
@@ -235,7 +251,7 @@ namespace Hibzz.ReflectionToolkit
             {
                 var type = inspector[index] as System.Type;
 
-                inspector.SelectType(type.Name);
+                inspector.SelectType(type.FullName);
                 inspector.RefreshMembers();
                 return;
             }
