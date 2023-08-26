@@ -1,0 +1,3 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="True">
+    <ui:Label text="Major Badge" parse-escape-sequences="true" display-tooltip-when-elided="true" enable-rich-text="false" name="Text" style="background-color: rgb(55, 114, 179); padding-right: 5px; padding-left: 5px; padding-top: 5px; padding-bottom: 5px; color: rgb(255, 255, 255); font-size: 12px; margin-right: 4px; margin-left: 0; border-top-left-radius: 0; border-top-right-radius: 0; border-bottom-right-radius: 0; border-bottom-left-radius: 0; margin-bottom: 4px; -unity-text-align: middle-center;" />
+</ui:UXML>

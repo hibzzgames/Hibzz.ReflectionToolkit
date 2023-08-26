@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 1bc8b3dad826f0946ad8bb4f272159fe
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - m_ViewDataDictionary: {instanceID: 0}
+  - coreTreeAsset: {fileID: 9197481963319205126, guid: 8f4697baefe178a46852efadcc60fafc, type: 3}
+  - majorBadgeAsset: {fileID: 9197481963319205126, guid: e79137aff8c648c49b4910246394a4fd, type: 3}
+  - minorBadgeAsset: {fileID: 9197481963319205126, guid: 92857e3a73519504f8d5ab3ea419c546, type: 3}
+  - resultItemAsset: {fileID: 9197481963319205126, guid: 6f52bd41521aa89448d1848a0dc56a10, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -1,0 +1,22 @@
+.section {
+    background-color: var(--unity-colors-default-background);
+    flex-grow: 1;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    border-bottom-left-radius: 5px;
+    padding-top: 5px;
+    padding-right: 0;
+    padding-bottom: 0;
+    padding-left: 5px;
+    margin-top: 10px;
+}
+
+.consoleField > TextInput {
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+.consoleField > TextInput > TextElement {
+    margin-left: 16px;
+}

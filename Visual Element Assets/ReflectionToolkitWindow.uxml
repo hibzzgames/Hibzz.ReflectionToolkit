@@ -1,0 +1,10 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <Style src="project://database/Packages/com.hibzz.reflectiontoolkit/Visual%20Element%20Assets/ReflectionToolkitWindow.uss?fileID=7433441132597879392&amp;guid=5b1a1c4a301572441a44097ba1f07f64&amp;type=3#ReflectionToolkitWindow" />
+    <ui:VisualElement name="Root" style="flex-grow: 0; margin-top: 10px; margin-right: 10px; margin-bottom: 10px; margin-left: 10px; justify-content: space-between; align-items: stretch; flex-direction: column;">
+        <ui:TextField name="ConsoleField" class="consoleField" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0;">
+            <ui:Label tabindex="-1" text="&gt;" parse-escape-sequences="true" display-tooltip-when-elided="true" name="CommandIcon" style="position: absolute; left: 5px; font-size: 16px; opacity: 0.6; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0; height: 18px; top: 3px; -unity-font-style: bold;" />
+        </ui:TextField>
+        <ui:VisualElement name="BadgeContainer" style="flex-grow: 0; flex-direction: row; height: auto; margin-top: 5px; border-top-left-radius: 3px; border-top-right-radius: 3px; border-bottom-right-radius: 3px; border-bottom-left-radius: 3px; flex-wrap: wrap; display: flex;" />
+        <ui:ListView name="Results" class="section" style="flex-grow: 1;" />
+    </ui:VisualElement>
+</ui:UXML>
