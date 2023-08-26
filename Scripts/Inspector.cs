@@ -83,8 +83,13 @@ namespace Hibzz.ReflectionToolkit
             Members.Clear();
             Types.Clear();
 
+            // assemblies don't change after initialization, if it did, unity would reload domain, reseting this tool
+            // so if the list is populated, it indicates that the process has already been run once
             if(Assemblies.Count > 0) { return; }
-            Assemblies = System.AppDomain.CurrentDomain.GetAssemblies().ToList();
+            Assemblies = AppDomain.CurrentDomain.GetAssemblies().ToList();
+
+            // sort the assemblies in the order of ascending of their primary name
+            Assemblies.Sort((a, b) => a.GetName().Name.CompareTo(b.GetName().Name));
         }
 
         /// <summary>

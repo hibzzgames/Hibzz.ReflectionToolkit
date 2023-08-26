@@ -63,6 +63,13 @@ namespace Hibzz.ReflectionToolkit
             resultListView.bindItem = PopulateItem;
             resultListView.itemsSource = inspector;
 
+            // todo: add callbacks for selecting things when double clicking listed elements
+
+            // todo: add callbacks to list items when selecting major badges
+
+            // by default show the list of assemblies (if no assembly is selected)
+            inspector.RefreshAssemblies();
+
             // refresh the result view
             RefreshResultView();
         }
