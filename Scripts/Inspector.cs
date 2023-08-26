@@ -156,6 +156,8 @@ namespace Hibzz.ReflectionToolkit
             SelectedType = foundType;
         }
 
+        static readonly BindingFlags AllFlags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static;
+
         /// <summary>
         /// Refresh the members on the selected type
         /// </summary>
@@ -172,7 +174,7 @@ namespace Hibzz.ReflectionToolkit
             }
 
             // add all members in the selected type into the members
-            Members = SelectedType.GetMembers().ToList();
+            Members = SelectedType.GetMembers(AllFlags).ToList();
         }
 
         public void Insert(int index, object value) { }

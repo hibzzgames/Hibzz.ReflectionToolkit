@@ -63,7 +63,14 @@ namespace Hibzz.ReflectionToolkit
             resultListView.bindItem = PopulateItem;
             resultListView.itemsSource = inspector;
 
-            // todo: add callbacks for selecting things when double clicking listed elements
+            // add callbacks for selecting things when double clicking listed elements
+            resultListView.RegisterCallback<MouseDownEvent>(e => 
+            {
+                // not a double click, ignore
+                if(e.clickCount != 2) { return; }
+                SelectResultAtIndex(resultListView.selectedIndex);
+                RefreshResultView();
+            });
 
             // todo: add callbacks to list items when selecting major badges
 
@@ -216,6 +223,33 @@ namespace Hibzz.ReflectionToolkit
                 mainLabel.text = inspector.Assemblies[index].GetName().Name;
                 return;
             }
+        }
+
+        void SelectResultAtIndex(int index)
+        {
+            // the inspector can't further inspect a member, not a valid request
+            if(inspector.Members.Count > 0) { return; }
+
+            // the user wants to inspect the selected type in detail and view the members
+            if(inspector.Types.Count > 0)
+            {
+                var type = inspector[index] as System.Type;
+
+                inspector.SelectType(type.Name);
+                inspector.RefreshMembers();
+                return;
+            }
+
+            // the user wants to inspect the selected assembly and view its types
+            if(inspector.Assemblies.Count > 0)
+            {
+                var assembly = inspector[index] as Assembly;
+
+                inspector.SelectAssembly(assembly.GetName().Name);
+                inspector.RefreshTypes();
+            }
+
+            // something weird happened if it reached here
         }
     }
 }
