@@ -33,6 +33,9 @@ namespace Hibzz.ReflectionToolkit
         /// </summary>
         public Type SelectedType = null;
 
+        // A reference to the inspector window
+        public InspectWindow inspectorWindow = null;
+
         // Not fixed size
         public bool IsFixedSize => false;
 
@@ -109,8 +112,7 @@ namespace Hibzz.ReflectionToolkit
                 // assembly with the given name not found
                 SelectedAssembly = null;
 
-                // TODO: error ui
-                // Messages.Add($"Assembly with the given name '{assemblyName}' not found");
+                inspectorWindow.DisplayErrorMessage($"Assembly with the given name '{assemblyName}' not found");
                 return;
             }
 
@@ -133,8 +135,7 @@ namespace Hibzz.ReflectionToolkit
             {
                 Types.Clear();
 
-                // TODO: error ui
-                // Messages.Add($"No assembly is currently selected. Please select an assembly to explore its types.");
+                inspectorWindow.DisplayErrorMessage($"No assembly is currently selected. Please select an assembly to explore its types.");
                 return;
             }
 
@@ -154,8 +155,7 @@ namespace Hibzz.ReflectionToolkit
             var foundType = Types.FirstOrDefault(type => type.FullName == typeName);
             if (foundType == null)
             {
-                // TODO: error ui
-                // Messages.Add($"Given type with the name '{typeName}' not found in '{SelectedAssembly.GetName().Name}'");
+                inspectorWindow.DisplayErrorMessage($"Given type with the name '{typeName}' not found in '{SelectedAssembly.GetName().Name}'");
                 return;
             }
 
@@ -174,8 +174,7 @@ namespace Hibzz.ReflectionToolkit
             {
                 Members.Clear();
 
-                // TODO: error ui
-                // Messages.Add("No type is currently selected. Please select a type to explore its members");
+                inspectorWindow.DisplayErrorMessage("No type is currently selected. Please select a type to explore its members");
                 return;
             }
 

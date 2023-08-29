@@ -5,7 +5,7 @@ using UnityEngine.UIElements;
 
 namespace Hibzz.ReflectionToolkit
 {
-    internal class ReflectionToolkitWindow : EditorWindow
+    internal class InspectWindow : EditorWindow
     {
         [SerializeField] VisualTreeAsset coreTreeAsset = default;
         [SerializeField] VisualTreeAsset majorBadgeAsset = default;
@@ -16,15 +16,18 @@ namespace Hibzz.ReflectionToolkit
         VisualElement badgeContainer; // stores the badges, like current assembly and type
         ListView resultListView; // container storing the results
 
+        VisualElement warningIcon; // a container for the warning icon
+
         // a reference to the inspector
         Inspector inspector = new Inspector();
 
         [MenuItem("Hibzz/Launch Reflection Inspector")]
         static void OpenReflectionToolkitWindow()
         {
-            var window = GetWindow<ReflectionToolkitWindow>();
+            var window = GetWindow<InspectWindow>();
             window.titleContent = new GUIContent("Reflection Inspector");
             window.minSize = new Vector2(400, 180);
+            window.inspector.inspectorWindow = window;
         }
 
         void CreateGUI()
@@ -43,10 +46,9 @@ namespace Hibzz.ReflectionToolkit
                 if(e.keyCode != KeyCode.Return) { return; }
                 
                 var success = OnRecieveNewCommand();
-                if(!success)
+                if(success)
                 {
-                    // TODO: error ui
-                    // inspector.Messages.Add("Given command is invalid");
+                    HideErrorMessage();
                 }
 
                 RefreshResultView(scrollToTop: success);
@@ -68,7 +70,11 @@ namespace Hibzz.ReflectionToolkit
                 if(e.clickCount != 2) { return; }
                 bool success = SelectResultAtIndex(resultListView.selectedIndex);
                 RefreshResultView(scrollToTop: success);
+                HideErrorMessage();
             });
+
+            // get the container for the warning icon
+            warningIcon = root.Q<VisualElement>("WarningIcon");
 
             // by default show the list of assemblies (if no assembly is selected)
             inspector.RefreshAssemblies();
@@ -139,6 +145,7 @@ namespace Hibzz.ReflectionToolkit
             }
 
             // some error occurred
+            DisplayErrorMessage("Unknown Command");
             return false;
         }
 
@@ -302,6 +309,23 @@ namespace Hibzz.ReflectionToolkit
 
             // some random issue
             return false;
+        }
+
+        public void DisplayErrorMessage(string text)
+        {
+            if(string.IsNullOrWhiteSpace(text))
+            {
+                HideErrorMessage();
+                return;
+            }
+
+            warningIcon.style.display = DisplayStyle.Flex;
+            warningIcon.tooltip = text;
+        }
+
+        public void HideErrorMessage()
+        {
+            warningIcon.style.display = DisplayStyle.None;
         }
     }
 }

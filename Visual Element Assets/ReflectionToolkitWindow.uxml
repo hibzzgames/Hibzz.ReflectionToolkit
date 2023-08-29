@@ -3,6 +3,7 @@
     <ui:VisualElement name="Root" style="flex-grow: 0; margin-top: 10px; margin-right: 10px; margin-bottom: 10px; margin-left: 10px; justify-content: space-between; align-items: stretch; flex-direction: column;">
         <ui:TextField name="ConsoleField" class="consoleField" style="margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0;">
             <ui:Label tabindex="-1" text="&gt;" parse-escape-sequences="true" display-tooltip-when-elided="true" name="CommandIcon" style="position: absolute; left: 5px; font-size: 16px; opacity: 0.6; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0; height: 18px; top: 3px; -unity-font-style: bold;" />
+            <ui:VisualElement name="WarningIcon" style="flex-grow: 0; width: 15px; flex-shrink: 0; position: absolute; align-items: auto; align-self: center; flex-direction: row; left: 95%; top: auto; height: 15px; background-image: url(&apos;project://database/Assets/UnityDefaultRuntimeTheme.tss?fileID=4584671053970592468&amp;guid=0dc747c4b2322c94d8d0dfaf3bdb98dd&amp;type=3#console.warnicon&apos;); display: flex; justify-content: flex-start; opacity: 1;" />
         </ui:TextField>
         <ui:VisualElement name="BadgeContainer" style="flex-grow: 0; flex-direction: row; height: auto; margin-top: 5px; border-top-left-radius: 3px; border-top-right-radius: 3px; border-bottom-right-radius: 3px; border-bottom-left-radius: 3px; flex-wrap: wrap; display: flex;" />
         <ui:ListView name="Results" class="section" style="flex-grow: 1;" />
