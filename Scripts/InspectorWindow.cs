@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using System.Reflection;
 using UnityEditor;
 using UnityEngine;
@@ -51,7 +49,7 @@ namespace Hibzz.ReflectionToolkit
                     // inspector.Messages.Add("Given command is invalid");
                 }
 
-                RefreshResultView();
+                RefreshResultView(scrollToTop: success);
             });
 
             // get the container for current badges
@@ -68,8 +66,8 @@ namespace Hibzz.ReflectionToolkit
             {
                 // not a double click, ignore
                 if(e.clickCount != 2) { return; }
-                SelectResultAtIndex(resultListView.selectedIndex);
-                RefreshResultView();
+                bool success = SelectResultAtIndex(resultListView.selectedIndex);
+                RefreshResultView(scrollToTop: success);
             });
 
             // by default show the list of assemblies (if no assembly is selected)
@@ -144,7 +142,7 @@ namespace Hibzz.ReflectionToolkit
             return false;
         }
 
-        void RefreshResultView()
+        void RefreshResultView(bool scrollToTop = true)
         {
             // no results are there in our queue... hide the result view
             if (inspector.Count <= 0)
@@ -159,6 +157,13 @@ namespace Hibzz.ReflectionToolkit
             // there's stuff to display, make sure it's visible
             resultListView.style.display = new StyleEnum<DisplayStyle>(DisplayStyle.Flex);
             resultListView.RefreshItems();
+
+            // set the position back to 0
+            if(scrollToTop)
+            {
+                resultListView.ScrollToItem(0);
+                resultListView.SetSelection(-1);
+            }
         }
 
         readonly Color __AssemblyBadgeColor = Color.HSVToRGB(0.59f, 0.7f, 0.7f);
@@ -176,8 +181,22 @@ namespace Hibzz.ReflectionToolkit
             // when clicking the assembly badge, show a list of all badges
             assemblyBadge.RegisterCallback<MouseDownEvent>(e => 
             {
+                // get the index of the selected assembly in a list of assemblies
+                var assemblyIndex = inspector.Assemblies.IndexOf(inspector.SelectedAssembly);
+
                 inspector.RefreshAssemblies();
-                RefreshResultView();
+                RefreshResultView(false);
+
+                // focus on the selected assembly index
+                EventCallback<GeometryChangedEvent> focusSelectionHandler = null;
+                focusSelectionHandler = (e) => 
+                { 
+                    resultListView.UnregisterCallback(focusSelectionHandler);
+                    resultListView.ScrollToItem(assemblyIndex);
+                    resultListView.SetSelection(assemblyIndex);
+                };
+
+                resultListView.RegisterCallback(focusSelectionHandler);
             });
             
             badgeContainer.Add(assemblyBadge);
@@ -189,8 +208,22 @@ namespace Hibzz.ReflectionToolkit
             // when clicking the type badge, show a list of all types in the assembly that the selected type is part of
             typeBadge.RegisterCallback<MouseDownEvent>(e => 
             {
+                // get the index of the selected type in a list of types
+                var typeIndex = inspector.Types.IndexOf(inspector.SelectedType);
+
                 inspector.RefreshTypes();
                 RefreshResultView();
+
+                // focus on the selected type index
+                EventCallback<GeometryChangedEvent> focusSelectionHandler = null;
+                focusSelectionHandler = (e) =>
+                {
+                    resultListView.UnregisterCallback(focusSelectionHandler);
+                    resultListView.ScrollToItem(typeIndex);
+                    resultListView.SetSelection(typeIndex);
+                };
+
+                resultListView.RegisterCallback(focusSelectionHandler);
             });
 
             badgeContainer.Add(typeBadge);
@@ -241,10 +274,10 @@ namespace Hibzz.ReflectionToolkit
             }
         }
 
-        void SelectResultAtIndex(int index)
+        bool SelectResultAtIndex(int index)
         {
             // the inspector can't further inspect a member, not a valid request
-            if(inspector.Members.Count > 0) { return; }
+            if(inspector.Members.Count > 0) { return false; }
 
             // the user wants to inspect the selected type in detail and view the members
             if(inspector.Types.Count > 0)
@@ -253,7 +286,7 @@ namespace Hibzz.ReflectionToolkit
 
                 inspector.SelectType(type.FullName);
                 inspector.RefreshMembers();
-                return;
+                return true;
             }
 
             // the user wants to inspect the selected assembly and view its types
@@ -263,9 +296,12 @@ namespace Hibzz.ReflectionToolkit
 
                 inspector.SelectAssembly(assembly.GetName().Name);
                 inspector.RefreshTypes();
+
+                return true;
             }
 
-            // something weird happened if it reached here
+            // some random issue
+            return false;
         }
     }
 }
