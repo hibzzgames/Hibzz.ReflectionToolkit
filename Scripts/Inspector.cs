@@ -34,6 +34,7 @@ namespace Hibzz.ReflectionToolkit
         public Type SelectedType = null;
 
         // A reference to the inspector window
+        // Hate this cyclic reference, but oh well, I just want to get this done
         public InspectWindow inspectorWindow = null;
 
         // Not fixed size
@@ -103,7 +104,7 @@ namespace Hibzz.ReflectionToolkit
         /// Select an assembly with the given name
         /// </summary>
         /// <param name="assemblyName">The name of the assembly</param>
-        public void SelectAssembly(string assemblyName)
+        public bool SelectAssembly(string assemblyName)
         {
             // make sure that the assembly is available
             RefreshAssemblies();
@@ -113,18 +114,21 @@ namespace Hibzz.ReflectionToolkit
                 SelectedAssembly = null;
 
                 inspectorWindow.DisplayErrorMessage($"Assembly with the given name '{assemblyName}' not found");
-                return;
+                return false;
             }
 
             // load and mark it as selected assembly
             SelectedAssembly = Assembly.Load(assemblyName);
             SelectedType = null;
+
+            // indicates success
+            return true;
         }
 
         /// <summary>
         /// Refresh the types in the selected assembly
         /// </summary>
-        public void RefreshTypes()
+        public bool RefreshTypes()
         {
             // same reasoning as the RefreshAssemblies
             Members.Clear();
@@ -136,19 +140,22 @@ namespace Hibzz.ReflectionToolkit
                 Types.Clear();
 
                 inspectorWindow.DisplayErrorMessage($"No assembly is currently selected. Please select an assembly to explore its types.");
-                return;
+                return false;
             }
 
             // put all the types in the selected assembly into a list
             Types = SelectedAssembly.GetTypes().ToList();
             Types.Sort((a, b) => a.FullName.CompareTo(b.FullName));
+
+            // indicates success
+            return true;
         }
 
         /// <summary>
         /// Select the type with the given name in the selected assembly
         /// </summary>
         /// <param name="typeName">The name of the type to select</param>
-        public void SelectType(string typeName)
+        public bool SelectType(string typeName)
         {
             // make sure the type, the user wants to select is valid
             RefreshTypes();
@@ -156,10 +163,11 @@ namespace Hibzz.ReflectionToolkit
             if (foundType == null)
             {
                 inspectorWindow.DisplayErrorMessage($"Given type with the name '{typeName}' not found in '{SelectedAssembly.GetName().Name}'");
-                return;
+                return false;
             }
 
             SelectedType = foundType;
+            return true;
         }
 
         static readonly BindingFlags AllFlags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static;
@@ -167,7 +175,7 @@ namespace Hibzz.ReflectionToolkit
         /// <summary>
         /// Refresh the members on the selected type
         /// </summary>
-        public void RefreshMembers()
+        public bool RefreshMembers()
         {
             // make sure a type is selected
             if(SelectedType == null)
@@ -175,11 +183,12 @@ namespace Hibzz.ReflectionToolkit
                 Members.Clear();
 
                 inspectorWindow.DisplayErrorMessage("No type is currently selected. Please select a type to explore its members");
-                return;
+                return false;
             }
 
             // add all members in the selected type into the members
             Members = SelectedType.GetMembers(AllFlags).ToList();
+            return true;
         }
 
         public void Insert(int index, object value) { }

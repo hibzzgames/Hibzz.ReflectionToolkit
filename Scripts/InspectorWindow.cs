@@ -12,11 +12,11 @@ namespace Hibzz.ReflectionToolkit
         [SerializeField] VisualTreeAsset minorBadgeAsset = default;
         [SerializeField] VisualTreeAsset resultItemAsset = default;
 
-        TextField consoleField; // a reference to the console field
+        TextField consoleField;       // a reference to the console field
         VisualElement badgeContainer; // stores the badges, like current assembly and type
-        ListView resultListView; // container storing the results
+        ListView resultListView;      // container storing the results
 
-        VisualElement warningIcon; // a container for the warning icon
+        VisualElement warningIcon;    // a container for the warning icon
 
         // a reference to the inspector
         Inspector inspector = new Inspector();
@@ -27,7 +27,6 @@ namespace Hibzz.ReflectionToolkit
             var window = GetWindow<InspectWindow>();
             window.titleContent = new GUIContent("Reflection Inspector");
             window.minSize = new Vector2(400, 180);
-            window.inspector.inspectorWindow = window;
         }
 
         void CreateGUI()
@@ -76,6 +75,9 @@ namespace Hibzz.ReflectionToolkit
             // get the container for the warning icon
             warningIcon = root.Q<VisualElement>("WarningIcon");
 
+            // setup the cyclic reference... uuuuggghhh
+            inspector.inspectorWindow = this;
+
             // by default show the list of assemblies (if no assembly is selected)
             inspector.RefreshAssemblies();
 
@@ -95,7 +97,11 @@ namespace Hibzz.ReflectionToolkit
             if (command[0] == "list")
             {
                 // at least one parameter is required for "list"
-                if(command.Length <= 1) { return false; }
+                if(command.Length <= 1) 
+                {
+                    DisplayErrorMessage("At least one parameter is required for the list command");
+                    return false; 
+                }
 
                 // user wants to list the assemblies
                 if (command[1] == "-a" || command[1] == "assemblies")
@@ -107,31 +113,34 @@ namespace Hibzz.ReflectionToolkit
                 // user wants to list the types
                 if (command[1] == "-t" || command[1] == "types")
                 {
-                    inspector.RefreshTypes();
-                    return true;
+                    return inspector.RefreshTypes();
                 }
 
                 // user wants to list the members
                 if (command[1] == "-m" || command[1] == "members")
                 {
-                    inspector.RefreshMembers();
-                    return true;
+                    return inspector.RefreshMembers();
                 }
 
-                return false; // failed
+                // unknown usage of list command
+                DisplayErrorMessage("Invalid usage of list command");
+                return false; 
             }
 
             // check if the user wants to use the select command
             if (command[0] == "select")
             {
                 // user needs to pass two arguments, a key and the value
-                if(command.Length <= 2) { return false; }
+                if(command.Length <= 2) 
+                {
+                    DisplayErrorMessage("At least two parameter is required for the select command");
+                    return false; 
+                }
 
                 // user wants to select an assembly
                 if (command[1] == "-a" || command[1] == "assembly")
                 {
-                    inspector.SelectAssembly(command[2]);
-                    return true;
+                    return inspector.SelectAssembly(command[2]);
                 }
 
                 // user wants to select a type
@@ -141,7 +150,9 @@ namespace Hibzz.ReflectionToolkit
                     return true;
                 }
 
-                return false; // failed
+                // unknown usage of select command
+                DisplayErrorMessage("Unknown usage of Select command");
+                return false;
             }
 
             // some error occurred
