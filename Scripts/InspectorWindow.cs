@@ -184,9 +184,6 @@ namespace Hibzz.ReflectionToolkit
             }
         }
 
-        readonly Color __AssemblyBadgeColor = Color.HSVToRGB(0.59f, 0.7f, 0.7f);
-        readonly Color __TypeBadgeColor = Color.HSVToRGB(0.73f, 0.7f, 0.7f);
-
         void RefreshMajorBadges()
         {
             // clear any existing badges
@@ -194,7 +191,7 @@ namespace Hibzz.ReflectionToolkit
 
             // when an assembly is selected, show badge with assembly name
             if(inspector.SelectedAssembly == null) { return; }
-            var assemblyBadge = GenerateMajorBadge(inspector.SelectedAssembly.GetName().Name, __AssemblyBadgeColor);
+            var assemblyBadge = GenerateMajorBadge(inspector.SelectedAssembly.GetName().Name, ColorScheme.Assembly);
 
             // when clicking the assembly badge, show a list of all badges
             assemblyBadge.RegisterCallback<MouseDownEvent>(e => 
@@ -221,7 +218,7 @@ namespace Hibzz.ReflectionToolkit
 
             // when a type is selected, show badge with the type name (including namespace)
             if(inspector.SelectedType == null) { return; }
-            var typeBadge = GenerateMajorBadge(inspector.SelectedType.FullName, __TypeBadgeColor);
+            var typeBadge = GenerateMajorBadge(inspector.SelectedType.FullName, ColorScheme.Type);
 
             // when clicking the type badge, show a list of all types in the assembly that the selected type is part of
             typeBadge.RegisterCallback<MouseDownEvent>(e => 
@@ -264,6 +261,7 @@ namespace Hibzz.ReflectionToolkit
         void PopulateItem(VisualElement element, int index)
         {
             var mainLabel = element.Q<Label>("MainLabel");
+            var badgeContainer = element.Q<VisualElement>("Badges");
             
             if(inspector.Members.Count > 0)
             {
@@ -280,7 +278,36 @@ namespace Hibzz.ReflectionToolkit
                 var type = inspector.Types[index];
                 mainLabel.text = type.FullName;
 
-                // todo: add minor badges
+                // clear the badge container and prepare to add the access modifier badges to it
+                badgeContainer.Clear();
+
+                // display a badge that it's public or not
+                if (type.IsPublic) 
+                { 
+                    AddBadge("public", ColorScheme.Public, badgeContainer); 
+                }
+                else 
+                { 
+                    AddBadge("internal", ColorScheme.Internal, badgeContainer); 
+                }
+
+                // c# represents a static class as being both abstract and sealed
+                if(type.IsAbstract && type.IsSealed)
+                {
+                    AddBadge("static", ColorScheme.Static, badgeContainer);
+                }
+
+                // additional check if it's just abstract
+                else if(type.IsAbstract)
+                {
+                    AddBadge("abstract", ColorScheme.Abstract, badgeContainer);
+                }
+
+                // or it's just sealed
+                else if(type.IsSealed)
+                {
+                    AddBadge("sealed", ColorScheme.Sealed, badgeContainer);
+                }
 
                 return;
             }
@@ -288,6 +315,7 @@ namespace Hibzz.ReflectionToolkit
             if(inspector.Assemblies.Count > 0)
             {
                 mainLabel.text = inspector.Assemblies[index].GetName().Name;
+                badgeContainer.Clear();
                 return;
             }
         }
@@ -337,6 +365,20 @@ namespace Hibzz.ReflectionToolkit
         public void HideErrorMessage()
         {
             warningIcon.style.display = DisplayStyle.None;
+        }
+
+        void AddBadge(string text, Color color, VisualElement container)
+        {
+            // instantiate and get the reference to the badge elements
+            var badge = minorBadgeAsset.Instantiate();
+            var label = badge.Q<Label>("Text");
+            
+            // update the text and color
+            label.text = text;
+            label.style.backgroundColor = color;
+
+            // add it to the container
+            container.Add(badge);
         }
     }
 }
