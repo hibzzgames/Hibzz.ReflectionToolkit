@@ -269,6 +269,7 @@ namespace Hibzz.ReflectionToolkit
                 mainLabel.text = member.ToString();
 
                 // todo: add minor badges
+                badgeContainer.Clear();
 
                 return;
             }

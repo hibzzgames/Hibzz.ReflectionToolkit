@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 
 namespace Hibzz.ReflectionToolkit
 {
@@ -145,6 +146,7 @@ namespace Hibzz.ReflectionToolkit
 
             // put all the types in the selected assembly into a list
             Types = SelectedAssembly.GetTypes().ToList();
+            Types.RemoveAll((type) => type.GetCustomAttribute<CompilerGeneratedAttribute>() != null || type.FullName.Contains('<') || type.FullName.Contains('+'));
             Types.Sort((a, b) => a.FullName.CompareTo(b.FullName));
 
             // indicates success
