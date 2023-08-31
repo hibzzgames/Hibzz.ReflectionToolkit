@@ -3,6 +3,8 @@
 
 ***An internal toolset used to examine assemblies and types using reflection***
 
+<br>
+
 ## Installation
 **Via Github**
 This package can be installed in the Unity Package Manager using the following git URL.
@@ -15,7 +17,19 @@ Alternatively, you can download the latest release from the [releases page](http
 <br>
 
 ## Usage
-*TODO*
+
+![toolkit inspector](https://github.com/hibzzgames/Hibzz.ReflectionToolkit/assets/37605842/78983314-1a07-43eb-ae33-2d579685f425)
+
+Launch the Reflection Inspector from the `Hibzz > Launch Reflection Inspector` menu. By default, all the assemblies are listed. Using simple click interactions, the user can inspect the types and members along with their different properties.
+
+The command field can be used to also inspect. However, this system is subject to change during the preview phase. Currently supported list of commands:
+- select
+  - `-a <assembly name>` - select an assembly
+  - `-t <type name>` - select a type
+- list
+  - `-a` - list all assemblies
+  - `-t` - list all types in selected assembly
+  - `-m` - list all members in selected type
 
 <br>
 
