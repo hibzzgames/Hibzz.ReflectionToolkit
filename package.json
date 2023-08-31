@@ -1,6 +1,6 @@
 {
   "name": "com.hibzz.reflectiontoolkit",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "displayName": "hibzz.reflectiontoolkit",
   "description": "An internal toolset used to examine assemblies and types using reflection",
   "author": {
