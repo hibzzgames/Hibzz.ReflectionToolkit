@@ -22,14 +22,18 @@ Alternatively, you can download the latest release from the [releases page](http
 
 Launch the Reflection Inspector from the `Hibzz > Launch Reflection Inspector` menu. By default, all the assemblies are listed. Using simple click interactions, the user can inspect the types and members along with their different properties.
 
-The command field can be used to also inspect. However, this system is subject to change during the preview phase. Currently supported list of commands:
-- select
-  - `-a <assembly name>` - select an assembly
-  - `-t <type name>` - select a type
-- list
-  - `-a` - list all assemblies
-  - `-t` - list all types in selected assembly
-  - `-m` - list all members in selected type
+<br>
+
+The command field can be used to also directly inspect specific members. Currently supported list of commands:
+- `assemblies`
+  - lists all loaded assemblies
+- `types [-a <assembly-name>]`
+  - list all types in the selected assembly
+  - (optional) the `-a` parameter can be used to select an assembly with the given assembly name
+- `members [-a <assembly-name>] [-t <type-name>]`
+  - list all members in the selected type
+  - (optional) the `-a` parameter can be used to select an assembly with the given assembly name
+  - (optional) the `-t` parameter can be used to select a type with the given type name
 
 <br>
 

@@ -87,76 +87,67 @@ namespace Hibzz.ReflectionToolkit
 
         bool OnRecieveNewCommand()
         {
-            // split and cache the command
-            var command = consoleField.value.Split(" ");
+            // process the commands (empty field is a valid command)
+            var command = new Command(consoleField.value);
+            if(command.Primary == null) { return true; }
 
-            // no command is provided (and that's a valid command)
-            if (command.Length <= 0) { return true; }
-
-            // check if the user wants to use the list command
-            if (command[0] == "list")
+            // the primary command involves listing assemblies
+            if (command.Primary == "assemblies")
             {
-                // at least one parameter is required for "list"
-                if (command.Length <= 1)
-                {
-                    DisplayErrorMessage("At least one parameter is required for the list command");
-                    return false;
-                }
-
-                // user wants to list the assemblies
-                if (command[1] == "-a" || command[1] == "assemblies")
-                {
-                    inspector.RefreshAssemblies();
-                    return true;
-                }
-
-                // user wants to list the types
-                if (command[1] == "-t" || command[1] == "types")
-                {
-                    return inspector.RefreshTypes();
-                }
-
-                // user wants to list the members
-                if (command[1] == "-m" || command[1] == "members")
-                {
-                    return inspector.RefreshMembers();
-                }
-
-                // unknown usage of list command
-                DisplayErrorMessage("Invalid usage of list command");
-                return false;
+                inspector.RefreshAssemblies();
+                return true;
             }
 
-            // check if the user wants to use the select command
-            if (command[0] == "select")
+            // the primary command to list all types in selected assembly
+            if(command.Primary == "types")
             {
-                // user needs to pass two arguments, a key and the value
-                if (command.Length <= 2)
+                // check for any parameter with the key -a
+                // this represents the user's intent to select an assembly with the given name
+                if(command.Parameters.ContainsKey("-a"))
                 {
-                    DisplayErrorMessage("At least two parameter is required for the select command");
-                    return false;
+                    var assembly = command.Parameters["-a"];
+                    var success = inspector.SelectAssembly(assembly);
+
+                    // the selection operation failed, report that to the user
+                    if(!success) { return false; }
                 }
 
-                // user wants to select an assembly
-                if (command[1] == "-a" || command[1] == "assembly")
+                // refresh and return if the operation was successful
+                return inspector.RefreshTypes();
+            }
+
+            // todo: members
+            // the primary command to list all members in a selected type
+            if(command.Primary == "members")
+            {
+                // check for any parameter with the key -a
+                // this represents the user's intent to select an assembly with the given name
+                if (command.Parameters.ContainsKey("-a"))
                 {
-                    return inspector.SelectAssembly(command[2]);
+                    var assembly = command.Parameters["-a"];
+                    var success = inspector.SelectAssembly(assembly);
+
+                    // the selection operation failed, report that to the user
+                    if (!success) { return false; }
                 }
 
-                // user wants to select a type
-                if (command[1] == "-t" || command[1] == "type")
+                // check for any parameter with the key -t
+                // this represents the user's intent to select a type with the given name
+                if (command.Parameters.ContainsKey("-t"))
                 {
-                    inspector.SelectType(command[2]);
-                    return true;
+                    var type = command.Parameters["-t"];
+                    var success = inspector.SelectType(type);
+
+                    // the selection operation failed, report that to the user
+                    if(!success) { return false; }
                 }
 
-                // unknown usage of select command
-                DisplayErrorMessage("Unknown usage of Select command");
-                return false;
+                // refresh and return if the process was successful
+                return inspector.RefreshMembers();
             }
 
             // some error occurred
-            DisplayErrorMessage("Unknown Command");
+            DisplayErrorMessage($"Unknown Command '{command.Primary}'");
             return false;
         }
 

@@ -184,6 +184,12 @@ namespace Hibzz.ReflectionToolkit
             {
                 Members.Clear();
 
+                if(SelectedAssembly == null)
+                {
+                    inspectorWindow.DisplayErrorMessage($"No assembly is currently selected. Please select an assembly and a type to explore its members");
+                    return false;
+                }    
+
                 inspectorWindow.DisplayErrorMessage("No type is currently selected. Please select a type to explore its members");
                 return false;
             }
